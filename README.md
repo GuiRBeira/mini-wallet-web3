@@ -7,7 +7,7 @@
 
 > Uma carteira digital descentralizada (dApp) construída para explorar a fundo a integração entre Front-end moderno e a Blockchain Ethereum.
 
-🔗 **Demo Online:** [Acesse aqui na Vercel](https://seu-link-aqui.vercel.app)
+🔗 **Demo Online:** [Acesse aqui na Vercel](https://mini-wallet-web3.vercel.app)
 
 ---
 
