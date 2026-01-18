@@ -51,7 +51,7 @@ Pré-requisitos: Node.js instalado e extensão MetaMask no navegador.
 
 ```bash
 # 1. Clone o repositório
-git clone [https://github.com/GuiRBeira/mini-wallet-web3.git](https://github.com/GuiRBeira/mini-wallet-web3.git)
+git clone https://github.com/GuiRBeira/mini-wallet-web3.git
 
 # 2. Instale as dependências
 cd mini-wallet-web3
