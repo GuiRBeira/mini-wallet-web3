@@ -61,7 +61,7 @@ export function WalletInfo({ address, balance, chainId, onRefresh, onDisconnect 
         <Box>
           <Text color="gray.400" fontSize="sm">Endereço</Text>
           <HStack>
-            <Text fontFamily="mono" fontSize="md">
+            <Text fontFamily="mono" fontSize="md" color="gray.200">
               {formatAddress(address)}
             </Text>
             {address && (
@@ -80,6 +80,19 @@ export function WalletInfo({ address, balance, chainId, onRefresh, onDisconnect 
           variant="outline"
           onClick={onDisconnect}
           mt={4}
+          _hover={{ 
+            bg: 'red.500', 
+            color: 'white',
+            borderColor: 'white',
+            transform: 'translateY(-1px)',
+            boxShadow: 'md' 
+          }}
+          _active = {{
+            bg: 'red.700',
+            transform: 'translateY(0px)',
+            boxShadow: 'sm'
+          }}
+          transition="all 0.4s hease"
         >
           Desconectar Carteira
         </Button>
