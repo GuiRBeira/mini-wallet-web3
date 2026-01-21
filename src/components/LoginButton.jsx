@@ -6,9 +6,9 @@ export const LoginButton = ({ onConnect, isConnecting }) => {
       <Text fontSize="lg" color="gray.600">
         Conecte sua carteira para acessar o DApp.
       </Text>
-      <Button 
-        colorScheme="orange" 
-        size="lg" 
+      <Button
+        colorScheme="orange"
+        size="lg"
         onClick={onConnect}
         isLoading={isConnecting}
         loadingText="Conectando..."

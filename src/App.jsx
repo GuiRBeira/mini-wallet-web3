@@ -55,7 +55,7 @@ function App() {
                 <Box p={6} bg="gray.800" borderRadius="lg" borderWidth="1px" borderColor="gray.700">
                   <TransferForm 
                     provider={wallet.provider} 
-                    onSuccess={refreshBalance} 
+                    onSuccess={refreshBalance}
                   />
                 </Box>
               </VStack>

@@ -1,93 +1,87 @@
-import { useState, useEffect } from 'react'; // <--- 1. Faltava o useEffect aqui
+// src/components/TransferForm.jsx
+import { useState, useEffect } from 'react';
 import { 
   Box, Button, Input, FormControl, FormLabel, VStack, useToast, Heading, Text, HStack 
 } from '@chakra-ui/react';
-import { ethers } from 'ethers';
+import { formatEther } from 'ethers'; // Único import do ethers para formatação visual
+import { estimateTransactionGas, executeTransaction } from '../services/walletService';
 
 export const TransferForm = ({ provider, onSuccess }) => {
   const [recipient, setRecipient] = useState("");
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [estimatedGas, setEstimatedGas] = useState(null); // Iniciar como null pra esconder quando não tiver
+  const [estimatedGas, setEstimatedGas] = useState(null);
 
   const toast = useToast();
 
-  // --- Lógica de Estimativa ---
+  // --- Lógica de Estimativa (Refatorada) ---
   useEffect(() => {
     const calculateGas = async () => {
-      // Se os campos não estiverem prontos, limpa a estimativa e para
-      if (!amount || !ethers.isAddress(recipient)) {
-        setEstimatedGas(null); 
+      // Limpa se os campos estiverem vazios
+      if (!amount || !recipient) {
+        setEstimatedGas(null);
         return;
       }
 
       try {
-        const signer = await provider.getSigner();
+        // Chama o Serviço (Abstração)
+        const costWei = await estimateTransactionGas(provider, recipient, amount);
         
-        // 2. CORREÇÃO: O nome do método é estimateGas (presente), não estimated (passado)
-        const gasLimit = await signer.estimateGas({
-          to: recipient,
-          value: ethers.parseEther(amount) // Isso pode falhar se amount for "0.0.1", o catch pega
-        });
-
-        const feeData = await provider.getFeeData();
-        
-        // Cálculo com BigInt (Funciona nativo no JS moderno/Ethers v6)
-        // Se gasPrice for null (raro), fallback para 0
-        const price = feeData.gasPrice || 0n;
-        const cost = gasLimit * price;
-
-        setEstimatedGas(ethers.formatEther(cost));
-
+        if (costWei) {
+           setEstimatedGas(formatEther(costWei));
+        }
       } catch (error) {
-        // Se der erro (ex: saldo insuficiente para gas), limpamos
-        console.log("Estimativa falhou (provavelmente input incompleto):", error.message);
+        console.error("Erro ao estimar gas:", error);
         setEstimatedGas(null);
       }
     };
 
-    // Pequeno delay para não calcular a cada letra digitada (Debounce manual)
     const timer = setTimeout(calculateGas, 500);
-    return () => clearTimeout(timer); // Cleanup
+    return () => clearTimeout(timer);
     
   }, [amount, recipient, provider]);
 
-  // --- Lógica de Envio (Mantida igual) ---
+  // --- Lógica de Envio (Refatorada) ---
   const handleTransfer = async () => {
-    if (!provider) return;
+    if (!provider) {
+      toast({ title: "Erro", description: "Carteira não detectada.", status: "error" });
+      return;
+    }
     setIsLoading(true);
 
     try {
-      if (!ethers.isAddress(recipient)) throw new Error("Endereço inválido");
-      if (parseFloat(amount) <= 0) throw new Error("Valor deve ser positivo");
-
-      const signer = await provider.getSigner();
-      const tx = await signer.sendTransaction({
-        to: recipient,
-        value: ethers.parseEther(amount)
-      });
+      // Chama o Serviço para executar
+      const tx = await executeTransaction(provider, recipient, amount);
 
       toast({
         title: "Transação Enviada",
-        description: "Aguardando confirmação...",
+        description: "Aguardando confirmação na Blockchain...",
         status: "info",
         duration: 5000,
         isClosable: true
       });
 
+      // Aguarda mineração
       await tx.wait();
 
-      toast({ title: "Sucesso!", status: "success", isClosable: true });
+      toast({ title: "Sucesso!", description: "Transferência confirmada.", status: "success", isClosable: true });
+      
+      // Limpa formulário
       setAmount("");
       setRecipient("");
-      setEstimatedGas(null); // Limpa estimativa ao terminar
+      setEstimatedGas(null);
       if (onSuccess) onSuccess();
 
     } catch (error) {
       console.error(error);
+      
+      // Tratamento básico de erros comuns
+      let msg = error.reason || error.message || "Falha na transação";
+      if (msg.includes("insufficient funds")) msg = "Saldo insuficiente para cobrir valor + gas.";
+      
       toast({ 
         title: "Erro", 
-        description: error.reason || error.message, 
+        description: msg, 
         status: "error",
         isClosable: true
       });
@@ -141,6 +135,8 @@ export const TransferForm = ({ provider, onSuccess }) => {
           isLoading={isLoading}
           isDisabled={!amount || !recipient}
           mt={2}
+          // Adicionando aquele hover style que conversamos ;)
+          _hover={{ bg: "purple.600", transform: "translateY(-1px)" }}
         >
           Enviar ETH
         </Button>
