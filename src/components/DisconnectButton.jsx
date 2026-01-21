@@ -4,7 +4,9 @@ export function DisconnectButton({ onClick }) {
   return (
     <Button
       colorScheme="red"
-      variant="outline"
+      variant="ghost"
+      size="sm"
+      width="full"
       onClick={onClick}
       mt={4}
       _hover={{
@@ -14,12 +16,7 @@ export function DisconnectButton({ onClick }) {
         transform: 'translateY(-1px)',
         boxShadow: 'md',
       }}
-      _active={{
-        bg: 'red.700',
-        transform: 'translateY(0px)',
-        boxShadow: 'sm',
-      }}
-      transition="all 0.4s ease" // corrigindo o "hease" :)
+      transition="all 0.4s ease"
     >
       Desconectar Carteira
     </Button>

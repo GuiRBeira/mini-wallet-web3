@@ -71,12 +71,13 @@ export const getNetworkFromChainId = (chainId) => {
 export const getNetworkName = (chainId) => {
   const net = getNetworkFromChainId(chainId)
   if (!net) return 'Desconhecida'
-  return net.name
+  return net.name ?? 'Desconhecida'
 }
 
 export const getNetworkColor = (chainId) => {
   const net = getNetworkFromChainId(chainId)
-  return net?.color ?? 'gray'
+  if (!net) return 'red'
+  return net?.color
 }
 
 export const isTestnet = (chainId) => {

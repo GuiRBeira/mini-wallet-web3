@@ -6,6 +6,7 @@ import {
   IconButton
 } from '@chakra-ui/react'
 import { RepeatIcon } from '@chakra-ui/icons'
+import { formatSmartEth } from '../utils/formatters'
 
 export function WalletBalance({ balance, onRefresh }) {
   return (
@@ -15,7 +16,7 @@ export function WalletBalance({ balance, onRefresh }) {
       </Text>
       <HStack>
         <Heading size="lg" color="green.400">
-          {balance} ETH
+          {formatSmartEth(balance)} ETH
         </Heading>
         <IconButton
           aria-label="Atualizar saldo"
