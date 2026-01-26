@@ -43,9 +43,6 @@ function App() {
                 </Box>
               ) : (
                 <VStack spacing={6} align="stretch">
-
-                  {/* Removemos a Badge de rede daqui de dentro do WalletInfo se quiser, 
-                    ou mantém redundante, não tem problema */}
                   <WalletInfo
                     address={wallet.address}
                     balance={wallet.balance}

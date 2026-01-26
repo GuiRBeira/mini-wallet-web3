@@ -1,22 +1,23 @@
-import { Button, Text, VStack } from '@chakra-ui/react';
-
 export const LoginButton = ({ onConnect, isConnecting }) => {
   return (
-    <VStack spacing={4}>
-      <Text fontSize="lg" color="gray.600">
+    <div className="flex flex-col items-center justify-center gap-4 w-full">
+      <p className="text-lg text-gray-500 font-medium">
         Conecte sua carteira para acessar o DApp.
-      </Text>
-      <Button
-        colorScheme="orange"
-        size="lg"
+      </p>
+      <button
         onClick={onConnect}
-        isLoading={isConnecting}
-        loadingText="Conectando..."
-        boxShadow="md"
-        _hover={{ transform: 'translateY(-2px)', boxShadow: 'lg' }}
+        disabled={isConnecting}
+        className={`
+        flex items-center justify-center gap-2
+        px-8 py-3 rounded-md font-bold text-white shadow-md
+        transition-all duration-200 active:scale-95
+        ${isConnecting ? 'bg-orange-300 cursor-not-allowed opacity-80' :
+            'bg-orange-500 hover:bg-orange600 hover:translate-y-0.5 hover:shadow-lg'
+          }
+        `}
       >
-        Conectar MetaMask
-      </Button>
-    </VStack>
-  );
-};
+        {isConnecting ? "Conectando..." :  "Conectar MetaMask"}
+      </button>
+    </div>
+  )
+}
